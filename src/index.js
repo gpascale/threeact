@@ -36,9 +36,14 @@ const threeify = (container, { onReady, onRenderFrame, showStats }) => {
 
   const scene = new THREE.Scene();
 
-  onReady && onReady({ canvas, container, renderer, scene });
+  const aspect = canvas.offsetWidth / canvas.offsetHeight;
+  const camera = new THREE.PerspectiveCamera(70, aspect, 1, 10);
+  camera.position.set(0, 0, 5);
+  camera.lookAt(0, 0, 0);
 
-  renderFrame();
+  onReady && onReady({ canvas, container, renderer, scene, camera });
+
+  renderFrame({ renderer, scene, camera });
 
   let rendererStats;
   let statses;
@@ -84,7 +89,7 @@ const threeify = (container, { onReady, onRenderFrame, showStats }) => {
   function renderFrame() {
     statses && statses.map(stats => stats.begin());
 
-    onRenderFrame();
+    onRenderFrame({ renderer, scene, camera });
 
     rendererStats && rendererStats.update(renderer);
     statses && statses.map(stats => stats.end());
