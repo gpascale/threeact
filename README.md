@@ -17,14 +17,15 @@ npm install --save threeact
 
 ```jsx
 import React, { Component } from 'react';
+import * as THREE from 'three';
 import Threeact from 'threeact';
 
 class Example extends Component {
   render() {
     return (
       <Threeact
-        // Set up your scene. add a camera, geometry, etc...
         onReady={({ renderer, scene, canvas }) => {
+          // Set up your scene. add a camera, geometry, etc...
           this.scene = scene;
           this.renderer = renderer;
 
@@ -39,16 +40,15 @@ class Example extends Component {
           );
           this.scene.add(this.cube);
         }}
-        // Update and render your scene
         onRenderFrame={() => {
+          // Update and render your scene
           this.cube.rotation.x += 0.02;
           this.cube.rotation.y -= 0.01;
           this.cube.rotation.z += 0.03;
 
           this.renderer.render(this.scene, this.camera);
         }}
-        // Optionally show webgl/THREE diagnostic and perf overlays
-        showStats={true}
+        showStats={true /* optionally show diagnostic and perf overlays */}
       />
     );
   }

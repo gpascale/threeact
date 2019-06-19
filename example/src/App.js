@@ -1,11 +1,11 @@
 import React from 'react';
 import * as THREE from 'three';
-
 import Threeact from 'threeact';
 
 export default () => (
   <Threeact
     onReady={({ renderer, scene, canvas }) => {
+      // Set up your scene. add a camera, geometry, etc...
       this.scene = scene;
       this.renderer = renderer;
 
@@ -21,13 +21,13 @@ export default () => (
       this.scene.add(this.cube);
     }}
     onRenderFrame={() => {
-      this.renderer.render(this.scene, this.camera);
-
-      // rotate the cube
+      // Update and render your scene
       this.cube.rotation.x += 0.02;
       this.cube.rotation.y -= 0.01;
       this.cube.rotation.z += 0.03;
+
+      this.renderer.render(this.scene, this.camera);
     }}
-    showStats={true}
+    showStats={true /* optionally show diagnostic and perf overlays */}
   />
 );
