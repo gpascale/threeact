@@ -1,6 +1,6 @@
 {
   "name": "threeact",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A simple React wrapper for THREE.js",
   "author": "gpascale",
   "license": "MIT",
@@ -24,7 +24,8 @@
   "peerDependencies": {
     "prop-types": "^15.5.4",
     "react": "^15.0.0 || ^16.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0"
+    "react-dom": "^15.0.0 || ^16.0.0",
+    "three": "^0.105.2"
   },
   "devDependencies": {
     "@gtp/eslint-config": "^0.2.1",
@@ -62,9 +63,7 @@
     "dist"
   ],
   "dependencies": {
-    "@jordandelcros/stats-js": "^1.0.5",
     "@xailabs/three-renderer-stats": "^1.0.4",
-    "stats-js": "^1.0.1",
-    "three": "^0.105.2"
+    "stats-js": "^1.0.1"
   }
 }
