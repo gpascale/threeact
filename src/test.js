@@ -1,7 +1,7 @@
-import ExampleComponent from './'
+import Threeact from './';
 
-describe('ExampleComponent', () => {
+describe('Threeact', () => {
   it('is truthy', () => {
-    expect(ExampleComponent).toBeTruthy()
-  })
-})
+    expect(Threeact).toBeTruthy();
+  });
+});
