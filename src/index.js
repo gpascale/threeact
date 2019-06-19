@@ -10,9 +10,19 @@ requestAnimationFrame(animate);
 
 export default class Threeact extends Component {
   componentDidMount() {
-    const { onReady, onRenderFrame, showStats } = this.props;
+    const {
+      onReady,
+      beforeRenderFrame,
+      afterRenderFrame,
+      showStats
+    } = this.props;
     this.threeRootElement.style.position = 'relative';
-    threeify(this.threeRootElement, { onReady, onRenderFrame, showStats });
+    threeify(this.threeRootElement, {
+      onReady,
+      beforeRenderFrame,
+      afterRenderFrame,
+      showStats
+    });
   }
 
   render() {
@@ -25,30 +35,40 @@ export default class Threeact extends Component {
   }
 }
 
-const threeify = (container, { onReady, onRenderFrame, showStats }) => {
+const threeify = (
+  container,
+  { onReady, beforeRenderFrame, afterRenderFrame, showStats }
+) => {
+  // Create the canvas
   const canvas = document.createElement('canvas');
-  bindEventListeners();
   container.appendChild(canvas);
+  window.onresize = resizeCanvas;
+  resizeCanvas(); // resize once to make the canvas fill its container
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
-  renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
-  renderer.setClearColor(0x000000);
-
   const scene = new THREE.Scene();
-
   const aspect = canvas.offsetWidth / canvas.offsetHeight;
   const camera = new THREE.PerspectiveCamera(70, aspect, 1, 10);
-  camera.position.set(0, 0, 5);
-  camera.lookAt(0, 0, 0);
-
-  onReady && onReady({ canvas, container, renderer, scene, camera });
-
-  renderFrame({ renderer, scene, camera });
-
   let rendererStats;
   let statses;
 
+  renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+  renderer.setClearColor(0x000000);
+  camera.position.set(0, 0, 5);
+  camera.lookAt(0, 0, 0);
+
   if (showStats) {
+    addStatsOverlays();
+  }
+
+  onReady && onReady({ canvas, container, renderer, scene, camera });
+
+  // Start the render loop just before returning
+  renderFrame({ renderer, scene, camera });
+
+  return canvas;
+
+  function addStatsOverlays() {
     // RendererStats shows geometry counts
     rendererStats = new RendererStats();
     rendererStats.domElement.style.position = 'absolute';
@@ -56,7 +76,7 @@ const threeify = (container, { onReady, onRenderFrame, showStats }) => {
     rendererStats.domElement.style.top = '10px';
     container.appendChild(rendererStats.domElement);
 
-    // Stats shows FPS, memory, etc...
+    // Stats (stats.js) shows FPS, memory, etc...
     const statsContainer = document.createElement('div');
     statsContainer.style.position = 'absolute';
     statsContainer.style.left = '10px';
@@ -72,12 +92,7 @@ const threeify = (container, { onReady, onRenderFrame, showStats }) => {
     container.appendChild(statsContainer);
   }
 
-  return canvas;
-
-  function bindEventListeners() {
-    window.onresize = resizeCanvas;
-    resizeCanvas();
-  }
+  function bindEventListeners() {}
 
   function resizeCanvas() {
     canvas.style.width = '100%';
@@ -87,12 +102,18 @@ const threeify = (container, { onReady, onRenderFrame, showStats }) => {
   }
 
   function renderFrame() {
-    statses && statses.map(stats => stats.begin());
+    if (showStats) {
+      statses && statses.map(stats => stats.begin());
+    }
 
-    onRenderFrame({ renderer, scene, camera });
+    beforeRenderFrame && beforeRenderFrame({ renderer, scene, camera });
+    renderer.render(scene, camera);
+    afterRenderFrame && afterRenderFrame({ renderer, scene, camera });
 
-    rendererStats && rendererStats.update(renderer);
-    statses && statses.map(stats => stats.end());
+    if (showStats) {
+      rendererStats && rendererStats.update(renderer);
+      statses && statses.map(stats => stats.end());
+    }
 
     requestAnimationFrame(renderFrame);
   }
@@ -100,9 +121,11 @@ const threeify = (container, { onReady, onRenderFrame, showStats }) => {
 
 Threeact.propTypes = {
   onReady: PropTypes.func,
-  onRenderFrame: PropTypes.func,
+  beforeRenderFrame: PropTypes.func,
+  afterRenderFrame: PropTypes.func,
+  showStats: PropTypes.bool
 };
 
 Threeact.defaultProps = {
-  className: 'threeact',
+  className: 'threeact'
 };
