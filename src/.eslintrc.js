@@ -8,10 +8,10 @@ module.exports = {
           {
             vars: 'all',
             argsIgnorePattern: '(renderer|scene|camera|_.*)',
-            varsIgnorePattern: '(React|_.*)',
-          },
-        ],
-      },
-    },
-  ],
+            varsIgnorePattern: '(React|_.*)'
+          }
+        ]
+      }
+    }
+  ]
 };
