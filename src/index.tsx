@@ -46,7 +46,7 @@ const Threeact = (props: ThreeactProps) => {
         showStats
       });
     }
-  });
+  }, []);
   return <div className={props.className} ref={threeRootElement} />;
 };
 
